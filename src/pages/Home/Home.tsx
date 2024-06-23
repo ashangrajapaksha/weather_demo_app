@@ -3,6 +3,7 @@ import Button from "../../components/Button/Button";
 import { WeatherData } from "../../types/WeatherData";
 import { useGeolocation } from "../../hooks/useGeoLocation";
 import { LocationData } from "../../types/LocationData";
+import WeatherCard from "../../components/Weathercard/WeatherCard";
 
 const Home = () => {
   const { location } = useGeolocation();
@@ -81,6 +82,9 @@ const Home = () => {
   return (
     <div>
       {" "}
+      <div className="d-flex justify-content-center mb-5">
+        <h2>Find Weather details</h2>
+      </div>
       <div className="d-flex col-auto justify-content-center mb-4">
         <form onSubmit={handleSubmit} className="form">
           <div className="d-flex gap-2">
@@ -99,31 +103,15 @@ const Home = () => {
           </div>
         </form>
       </div>
-      {loading && (
-        <div className="spinner-border text-info" role="status">
-          <span className="sr-only"></span>
-        </div>
-      )}
-      {weatherDataError && <p>Error: {weatherDataError}</p>}
-      {weatherData &&
-        weatherData.weather.map((item, index) => (
-          <div key={index} className="weather-data">
-            <p className="temperature">{item.description}</p>
-            <img
-              src={`https://openweathermap.org/img/wn/${item.icon}.png`}
-              alt=""
-            />
+      <div className="d-flex justify-content-center">
+        {loading && (
+          <div className="spinner-border text-info" role="status">
+            <span className="sr-only"></span>
           </div>
-        ))}
-      {weatherData && (
-        <div>
-          <p>City: {weatherData.name}</p>
-          <p>Temperature: {weatherData.main.temp}°C</p>
-          <p>Wind Speed : {weatherData.wind.speed} km/h</p>
-          <p>Humidity : {weatherData.main.humidity}%</p>
-          <p>Last Updated Time : {date.toLocaleString()}</p>
-        </div>
-      )}
+        )}
+        {weatherDataError && <p>Error: {weatherDataError}</p>}
+        {weatherData && <WeatherCard weatherData={weatherData} date={date} />}
+      </div>
     </div>
   );
 };
