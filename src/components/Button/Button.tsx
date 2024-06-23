@@ -2,9 +2,10 @@ import React, { CSSProperties } from "react";
 
 interface ButtonProps {
   label: string;
-  onClick: () => void;
+  onClick?: () => void;
   style?: CSSProperties;
   className?: string;
+  type?: "button" | "submit"; // Add type prop to handle button types
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -12,8 +13,9 @@ const Button: React.FC<ButtonProps> = ({
   onClick,
   style,
   className,
+  type = "button",
 }) => (
-  <button className={`btn  ${className || ""}`} onClick={onClick}>
+  <button type={type} className={`btn  ${className}`} onClick={onClick}>
     {label}
   </button>
 );
