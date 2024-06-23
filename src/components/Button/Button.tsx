@@ -5,13 +5,12 @@ interface ButtonProps {
   onClick?: () => void;
   style?: CSSProperties;
   className?: string;
-  type?: "button" | "submit"; // Add type prop to handle button types
+  type?: "button" | "submit";
 }
 
 const Button: React.FC<ButtonProps> = ({
   label,
   onClick,
-  style,
   className,
   type = "button",
 }) => (
