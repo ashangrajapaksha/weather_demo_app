@@ -2,7 +2,7 @@ import React, { FormEvent, useState, useEffect } from "react";
 import Button from "../../components/Button/Button";
 import { WeatherData } from "../../types/WeatherData";
 import { useGeolocation } from "../../hooks/useGeoLocation";
-import WeatherCard from "../../components/Weathercard/WeatherCard";
+import WeatherCard from "../../components/WeatherCard/WeatherCard";
 
 export const WeatherDetail = () => {
   const { location } = useGeolocation();
