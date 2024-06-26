@@ -1,2 +1,3 @@
 @import "./components/WeatherCard/WeatherCard.scss";
 @import "./pages/Home/Home.scss";
+@import "./pages/Register/Register.scss";
