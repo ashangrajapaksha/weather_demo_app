@@ -1,12 +1,18 @@
 import React, { useState } from "react";
-import { LoginData } from "../../types/AuthData";
+import { LoginData, User } from "../../types/AuthData";
 import Button from "../Button/Button";
+import { login } from "../../services/auth";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 
 const LoginForm: React.FC = () => {
   const [userData, setUserData] = useState<LoginData>({
     email: "",
     password: "",
   });
+  const auth = useAuth();
+  const navigate = useNavigate();
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUserData({
@@ -14,7 +20,17 @@ const LoginForm: React.FC = () => {
       [name]: value,
     });
   };
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {};
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const user: User = await login(userData);
+      auth.login(user);
+      navigate("/home");
+    } catch (error) {
+      console.error("Login failed", error);
+    }
+  };
 
   return (
     <div>
