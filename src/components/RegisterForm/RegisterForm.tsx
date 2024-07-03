@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Errors, RegisterData } from "../../types/AuthData";
 import Button from "../Button/Button";
 import { useNavigate } from "react-router-dom";
+import { register } from "../../services/auth";
 
 const RegisterForm: React.FC = () => {
   const [userData, setUserData] = useState<RegisterData>({
@@ -22,8 +23,12 @@ const RegisterForm: React.FC = () => {
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
     } else {
-      // console.log(userData);
-      navigate("/login");
+      try {
+        await register(userData);
+        navigate("/login");
+      } catch (error) {
+        console.error("Registration failed", error);
+      }
     }
   };
 

@@ -16,3 +16,8 @@ export type LoginData = {
   email: string;
   password: string;
 };
+
+export type User = {
+  token: string;
+  userId: string;
+};
