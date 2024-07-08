@@ -1,5 +1,3 @@
-import React from "react";
-
 import { WeatherDetail } from "../WeatherDetail/WeatherDetail";
 
 const Home = () => {

@@ -25,7 +25,7 @@ const RegisterForm: React.FC = () => {
     } else {
       try {
         await register(userData);
-        navigate("/login");
+        navigate("/");
       } catch (error) {
         console.error("Registration failed", error);
       }
