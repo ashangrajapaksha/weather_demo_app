@@ -9,7 +9,8 @@ export type RegisterData = {
 export type Errors = {
   email?: string;
   password?: string;
-  confirmPassword?: string;
+  confirmPassword?: string | null;
+  general?: string | null;
 };
 
 export type LoginData = {

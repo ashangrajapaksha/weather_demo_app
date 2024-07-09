@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { LoginData, User } from "../../types/AuthData";
+import { Errors, LoginData, User } from "../../types/AuthData";
 import Button from "../Button/Button";
 import { login } from "../../services/auth";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +10,8 @@ const LoginForm: React.FC = () => {
     email: "",
     password: "",
   });
+  const [error, setError] = useState<Errors | null>(null);
+
   const auth = useAuth();
   const navigate = useNavigate();
 
@@ -23,13 +25,33 @@ const LoginForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      const user: User = await login(userData);
-      auth.login(user);
-      navigate("/home");
-    } catch (error) {
-      console.error("Login failed", error);
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setError(validationErrors);
+    } else {
+      setError({});
+      try {
+        const user: User = await login(userData);
+        auth.login(user);
+        navigate("/home");
+      } catch (error) {
+        setError({ general: "Invalid email or password" });
+        console.error("Login failed", error);
+      }
     }
+  };
+
+  const validateForm = (): Errors => {
+    const errors: Errors = {};
+
+    if (!userData.email) {
+      errors.email = "Email is required";
+    }
+    if (!userData.password) {
+      errors.password = "Password is required";
+    }
+
+    return errors;
   };
 
   return (
@@ -49,6 +71,9 @@ const LoginForm: React.FC = () => {
                 value={userData?.email}
                 onChange={handleChange}
               />
+              {error?.email && (
+                <div style={{ color: "red" }}>{error.email}</div>
+              )}
             </div>
           </div>
           <div className="form-group row">
@@ -64,6 +89,9 @@ const LoginForm: React.FC = () => {
                 value={userData?.password}
                 onChange={handleChange}
               />
+              {error?.password && (
+                <div style={{ color: "red" }}>{error.password}</div>
+              )}
             </div>
             <div className="d-flex justify-content-center mt-3">
               <Button
@@ -71,6 +99,14 @@ const LoginForm: React.FC = () => {
                 type="submit"
                 className="btn-primary btn-md"
               ></Button>
+            </div>
+            <div className="row">
+              <div className="col-4"></div>
+              <div className="col-8">
+                <div className="d-flex mt-2">
+                  {error && <div style={{ color: "red" }}>{error.general}</div>}
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -24,7 +24,8 @@ export const login = async (credentials: LoginData): Promise<User> => {
   });
 
   if (!response.ok) {
-    throw new Error("Login failed");
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Login failed");
   }
 
   const data: User = await response.json();
