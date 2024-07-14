@@ -1,7 +1,27 @@
-import { RegisterData, LoginData, User } from "../types/AuthData";
+import { RegisterData, LoginData, User, OtpData } from "../types/AuthData";
 
-export const register = async (credentials: RegisterData): Promise<void> => {
-  const response = await fetch("http://localhost:3000/api/register", {
+export const verifyOtp = async (data: OtpData): Promise<any> => {
+  const response = await fetch("http://localhost:3000/api/auth/verify-otp", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(`OTP verification failed: ${errorData.message}`);
+  }
+
+  const reData = await response.json();
+  return reData;
+};
+
+export const register = async (credentials: RegisterData): Promise<any> => {
+  console.log(credentials);
+
+  const response = await fetch("http://localhost:3000/api/auth/register", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -10,12 +30,16 @@ export const register = async (credentials: RegisterData): Promise<void> => {
   });
 
   if (!response.ok) {
-    throw new Error("Registration failed");
+    const errorData = await response.json();
+    throw new Error(`Registration failed: ${errorData.message}`);
   }
+
+  const data = await response.json();
+  return data;
 };
 
 export const login = async (credentials: LoginData): Promise<User> => {
-  const response = await fetch("http://localhost:3000/api/login", {
+  const response = await fetch("http://localhost:3000/api/auth/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -22,3 +22,12 @@ export type User = {
   token: string;
   userId: string;
 };
+
+export type OtpData = {
+  email: string;
+  otp: string;
+};
+
+export type OtpResponse = {
+  message: string;
+};

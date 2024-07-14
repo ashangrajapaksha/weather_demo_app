@@ -6,6 +6,7 @@ interface ButtonProps {
   style?: CSSProperties;
   className?: string;
   type?: "button" | "submit";
+  disabled?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -13,8 +14,14 @@ const Button: React.FC<ButtonProps> = ({
   onClick,
   className,
   type = "button",
+  disabled = false,
 }) => (
-  <button type={type} className={`btn  ${className}`} onClick={onClick}>
+  <button
+    type={type}
+    className={`btn ${className}`}
+    onClick={onClick}
+    disabled={disabled}
+  >
     {label}
   </button>
 );
