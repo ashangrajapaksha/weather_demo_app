@@ -237,23 +237,29 @@ const RegisterForm: React.FC = () => {
               </div>
             </>
           ) : (
-            <div className="form-group row">
-              <label htmlFor="otp" className="col-md-4 col-form-label">
-                Enter OTP
-              </label>
-              <div className="col-md-8">
-                <input
-                  type="text"
-                  className="form-control"
-                  name="otp"
-                  id="otp"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  disabled={timeLeft === 0}
-                />
-                {errors.otp && (
-                  <span style={{ color: "red" }}>{errors.otp}</span>
-                )}
+            <div className="card-wrap">
+              <h3>OTP Verification</h3>
+              <div className="alert alert-info" role="alert">
+                We've sent a verification code to your email - {userData.email}
+              </div>
+              <div className="form-group row">
+                <label htmlFor="otp" className="col-md-4 col-form-label">
+                  Enter OTP
+                </label>
+                <div className="col-md-8">
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="otp"
+                    id="otp"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    disabled={timeLeft === 0}
+                  />
+                  {errors.otp && (
+                    <span style={{ color: "red" }}>{errors.otp}</span>
+                  )}
+                </div>
               </div>
             </div>
           )}
