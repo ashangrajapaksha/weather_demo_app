@@ -1,4 +1,10 @@
-import { RegisterData, LoginData, User, OtpData } from "../types/AuthData";
+import {
+  RegisterData,
+  LoginData,
+  User,
+  OtpData,
+  OtpReqData,
+} from "../types/AuthData";
 
 export const verifyOtp = async (data: OtpData): Promise<any> => {
   const response = await fetch("http://localhost:3000/api/auth/verify-otp", {
@@ -18,9 +24,25 @@ export const verifyOtp = async (data: OtpData): Promise<any> => {
   return reData;
 };
 
-export const register = async (credentials: RegisterData): Promise<any> => {
-  console.log(credentials);
+export const requestNewOtp = async (data: OtpReqData): Promise<any> => {
+  const response = await fetch("http://localhost:3000/api/auth/generate-otp", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
 
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message);
+  }
+
+  const reData = await response.json();
+  return reData;
+};
+
+export const register = async (credentials: RegisterData): Promise<any> => {
   const response = await fetch("http://localhost:3000/api/auth/register", {
     method: "POST",
     headers: {

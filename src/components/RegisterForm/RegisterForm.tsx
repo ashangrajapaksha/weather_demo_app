@@ -4,10 +4,11 @@ import {
   RegisterData,
   OtpData,
   OtpResponse,
+  OtpReqData,
 } from "../../types/AuthData";
 import Button from "../Button/Button";
 import { useNavigate } from "react-router-dom";
-import { register, verifyOtp } from "../../services/auth";
+import { register, verifyOtp, requestNewOtp } from "../../services/auth";
 
 const RegisterForm: React.FC = () => {
   const [userData, setUserData] = useState<RegisterData>({
@@ -48,21 +49,26 @@ const RegisterForm: React.FC = () => {
 
   useEffect(() => {
     if (otpSent) {
-      setTimeLeft(60); // 5 minutes
+      setTimeLeft(60); // 1 minute
       timerRef.current = setInterval(() => {
-        setTimeLeft((prev) => prev - 1);
+        setTimeLeft((prev) => {
+          if (prev === 0) {
+            clearInterval(timerRef.current!); // Clear interval if time runs out
+            return 0;
+          }
+          return prev - 1;
+        });
       }, 1000);
+    } else {
+      // Clear the timer if OTP has not been sent
+      clearInterval(timerRef.current!);
+      setTimeLeft(0);
     }
+
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
   }, [otpSent]);
-
-  useEffect(() => {
-    if (timeLeft === 0 && timerRef.current) {
-      clearInterval(timerRef.current);
-    }
-  }, [timeLeft]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -71,13 +77,25 @@ const RegisterForm: React.FC = () => {
       setErrors(validationErrors);
     } else {
       try {
-        const res = await register(userData);
-        console.log("E", res);
-
+        await register(userData);
         setOtpSent(true);
       } catch (error) {
         console.error("Registration failed", error);
       }
+    }
+  };
+
+  const resendOtp = async () => {
+    try {
+      const email: OtpReqData = {
+        email: userData.email,
+      };
+      await requestNewOtp(email);
+      setOtpSent(true);
+      setTimeLeft(60); // Reset the timer for the new OTP
+    } catch (error) {
+      console.error("Request new OTP failed", error);
+      setMessage("Failed to request a new OTP. Please try again later.");
     }
   };
 
@@ -126,7 +144,7 @@ const RegisterForm: React.FC = () => {
     }
 
     if (!userData.password) {
-      errors.password = "password is requied";
+      errors.password = "Password is required";
     } else if (userData.password.length < 8) {
       errors.password = "Password must be at least 8 characters";
     } else if (!/[A-Z]/.test(userData.password)) {
@@ -140,6 +158,7 @@ const RegisterForm: React.FC = () => {
     }
     return errors;
   };
+
   return (
     <div className="d-flex">
       <form onSubmit={otpSent ? handleVerifyOTP : handleSubmit}>
@@ -263,13 +282,22 @@ const RegisterForm: React.FC = () => {
               </div>
             </div>
           )}
-          <div className="d-flex justify-content-center">
+          <div className="d-flex justify-content-center gap-1">
             <Button
               label={otpSent ? "Verify OTP" : "Register"}
               type="submit"
               className="btn-primary btn-md"
               disabled={otpSent && timeLeft === 0}
             />
+            {timeLeft === 0 && otpSent && (
+              <div className="">
+                <Button
+                  label="ReSend OTP"
+                  onClick={resendOtp}
+                  className="btn-primary btn-md"
+                />
+              </div>
+            )}
           </div>
           {otpSent && (
             <div className="d-flex justify-content-center">

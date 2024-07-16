@@ -27,6 +27,9 @@ export type OtpData = {
   email: string;
   otp: string;
 };
+export type OtpReqData = {
+  email: string;
+};
 
 export type OtpResponse = {
   message: string;
